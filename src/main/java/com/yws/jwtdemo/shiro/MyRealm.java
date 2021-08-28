@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import com.yws.jwtdemo.entity.User;
 import com.yws.jwtdemo.service.UserService;
 
+/**
+ * 自定义realm类
+ *
+ * @author yaoweisong
+ */
 @Service
 public class MyRealm extends AuthorizingRealm {
 
@@ -70,10 +75,10 @@ public class MyRealm extends AuthorizingRealm {
             throw new AuthenticationException("User didn't existed!");
         }
 
-        if (! JwtUtil.verify(token, username, userBean.getPassword())) {
+        if (!JwtUtil.verify(token, username, userBean.getPassword())) {
             throw new AuthenticationException("Username or password error");
         }
-        
+
         return new SimpleAuthenticationInfo(token, token, "my_realm");
     }
 }

@@ -19,69 +19,74 @@ import com.yws.jwtdemo.shiro.JwtUtil;
 @RestController
 public class UserController {
 
-	private UserService userService;
-	
-	@Autowired
-	public void setService(UserService userService) {
-		this.userService = userService;
-	}
-	
-	/**
-	 * 登录
-	 * @param username
-	 * @param password
-	 * @return
-	 */
-	@RequestMapping("login")
-	public String login(String username, String password) {
-		User user = userService.getUser(username);
-		if(user.getPassword().equals(password)) {
-			return JwtUtil.sign(username, password);
-		} else {
-			//int n = 10 / 0;
-			throw new BusinessException(-1, "登录失败");
-		}
-	}
-	
-	/**
-	 * 所有人都可访问<br>
-	 * 但是用户与游客看到的内容不一样
-	 * @return
-	 */
-	@GetMapping("article")
-	public String article() {
-		Subject subject = SecurityUtils.getSubject();
-		if(subject.isAuthenticated()) {
-			return "You are already logged in";
-		} else {
-			return "You are guest";
-		}
-	}
-	
-	/**
-	 * 登录的用户才可以访问
-	 * @return
-	 */
-	@GetMapping("require_auth")
-	@RequiresAuthentication
-	public String requireAuth() {
-		return "You are authenticated";
-	}
-	
-	/**
-	 * admin角色才可以访问
-	 * @return
-	 */
-	@GetMapping("/require_role")
+    private UserService userService;
+
+    @Autowired
+    public void setService(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * 登录
+     *
+     * @param username
+     * @param password
+     * @return
+     */
+    @RequestMapping("login")
+    public String login(String username, String password) {
+        User user = userService.getUser(username);
+        if (user.getPassword().equals(password)) {
+            return JwtUtil.sign(username, password);
+        } else {
+            //int n = 10 / 0;
+            throw new BusinessException(-1, "登录失败");
+        }
+    }
+
+    /**
+     * 所有人都可访问<br>
+     * 但是用户与游客看到的内容不一样
+     *
+     * @return
+     */
+    @GetMapping("article")
+    public String article() {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            return "You are already logged in";
+        } else {
+            return "You are guest";
+        }
+    }
+
+    /**
+     * 登录的用户才可以访问
+     *
+     * @return
+     */
+    @GetMapping("require_auth")
+    @RequiresAuthentication
+    public String requireAuth() {
+        return "You are authenticated";
+    }
+
+    /**
+     * admin角色才可以访问
+     *
+     * @return
+     */
+    @GetMapping("/require_role")
     @RequiresRoles("admin")
     public String requireRole() {
         return "You are visiting require_role";
     }
 
-	/**
-	 * 拥有view和edit权限的用户才可以访问
-	 * @return
-	 */
+    /**
+     * 拥有view和edit权限的用户才可以访问
+     *
+     * @return
+     */
     @GetMapping("/require_permission")
     @RequiresPermissions(logical = Logical.AND, value = {"view", "edit"})
     public String requirePermission() {
