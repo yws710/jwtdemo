@@ -70,7 +70,7 @@ public class JwtUtil {
 					.withClaim("username", username)
 					.withExpiresAt(date)
 					.sign(algorithm);
-		} catch (IllegalArgumentException | UnsupportedEncodingException e) {
+		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 		return null;
